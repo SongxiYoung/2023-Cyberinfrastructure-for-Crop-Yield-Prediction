@@ -1,0 +1,74 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2758
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 Courier;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue255;\red255\green255\blue254;\red0\green0\blue0;
+\red144\green1\blue18;\red15\green112\blue1;\red14\green110\blue109;\red19\green119\blue72;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c100000;\cssrgb\c100000\c100000\c99608;\cssrgb\c0\c0\c0;
+\cssrgb\c63922\c8235\c8235;\cssrgb\c0\c50196\c0;\cssrgb\c0\c50196\c50196;\cssrgb\c3529\c52941\c35294;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs24 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 const\cf0 \strokec4  ee = require(\cf5 \strokec5 '@google/earthengine'\cf0 \strokec4 );\cb1 \
+\cf2 \cb3 \strokec2 var\cf0 \strokec4  eeKey = require(\cf5 \strokec5 './eeKey.json'\cf0 \strokec4 );\cb1 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb3 exports.download = \cf2 \strokec2 function\cf0 \strokec4  (message, context) \{\cb1 \
+\
+\cb3   console.info(\cf5 \strokec5 '----------FUNCTION ENTRY----------'\cf0 \strokec4 );\cb1 \
+\
+\cb3   ee.data.authenticateViaPrivateKey(eeKey, () => \{\cb1 \
+\cb3         ee.initialize(\cf2 \strokec2 null\cf0 \strokec4 , \cf2 \strokec2 null\cf0 \strokec4 , () => \{\cb1 \
+\cb3               \cb1 \
+\cb3       console.info(\cf5 \strokec5 '----------GEE ENTRY----------'\cf0 \strokec4 );\cb1 \
+\
+\cb3       \cf6 \strokec6 // A Lansat 8 TOA image collection for a specific year and location.\cf0 \cb1 \strokec4 \
+\cb3       \cf2 \strokec2 var\cf0 \strokec4  col = ee.\cf7 \strokec7 ImageCollection\cf0 \strokec4 (\cf5 \strokec5 "LANDSAT/LC08/C02/T1_TOA"\cf0 \strokec4 )\cb1 \
+\cb3         .filterBounds(ee.\cf7 \strokec7 Geometry\cf0 \strokec4 .\cf7 \strokec7 Point\cf0 \strokec4 ([-\cf8 \strokec8 122.073\cf0 \strokec4 , \cf8 \strokec8 37.188\cf0 \strokec4 ]))\cb1 \
+\cb3         .filterDate(\cf5 \strokec5 '2018'\cf0 \strokec4 , \cf5 \strokec5 '2019'\cf0 \strokec4 );\cb1 \
+\
+\cb3       \cf6 \strokec6 // An image property of interest, percent cloud cover in this case.\cf0 \cb1 \strokec4 \
+\cb3       \cf2 \strokec2 var\cf0 \strokec4  prop = \cf5 \strokec5 'CLOUD_COVER'\cf0 \strokec4 ;\cb1 \
+\cb3       \cb1 \
+\cb3       console.info(\cf5 \strokec5 'List of property values:'\cf0 \strokec4 , col.aggregate_array(prop).getInfo());\cb1 \
+\cb3         \cb1 \
+\cb3         \cf6 \strokec6 // create task id\cf0 \cb1 \strokec4 \
+\cb3         \cf2 \strokec2 var\cf0 \strokec4  newTaskId = ee.data.newTaskId(\cf8 \strokec8 1\cf0 \strokec4 )[\cf8 \strokec8 0\cf0 \strokec4 ];\cb1 \
+\cb3         \cb1 \
+\cb3         \cf6 \strokec6 // define export parameters\cf0 \cb1 \strokec4 \
+\cb3         params = \{\cb1 \
+\cb3           element: col.mean(),\cb1 \
+\cb3           type: \cf5 \strokec5 'EXPORT_IMAGE'\cf0 \strokec4 ,\cb1 \
+\cb3           description: \cf5 \strokec5 'TOA'\cf0 \strokec4 ,\cb1 \
+\cb3           crs: \cf5 \strokec5 'EPSG:4326'\cf0 \strokec4 ,\cb1 \
+\cb3           scale: \cf8 \strokec8 960\cf0 \strokec4 ,\cb1 \
+\cb3           maxPixels: \cf8 \strokec8 1e12\cf0 \strokec4 ,\cb1 \
+\cb3           assetId: \cf5 \strokec5 'projects/tidy-resolver-404613/assets/TOA'\cf0 \strokec4 ,\cb1 \
+\cb3         \}\cb1 \
+\cb3           \cb1 \
+\cb3         \cf6 \strokec6 // start export\cf0 \cb1 \strokec4 \
+\cb3 ee.data.startProcessing(newTaskId, params, \cf2 \strokec2 function\cf0 \strokec4 (result) \{\cb1 \
+\cb3     console.info(\cf5 \strokec5 'task:'\cf0 \strokec4 , result.taskId);\cb1 \
+\cb3     console.info(\cf5 \strokec5 'name:'\cf0 \strokec4 , result.name);\cb1 \
+\cb3     console.info(\cf5 \strokec5 'started:'\cf0 \strokec4 , result.started);\cb1 \
+\cb3     \cf6 \strokec6 // console.info('note:', result.note);\cf0 \cb1 \strokec4 \
+\
+\cb3     \cf6 \strokec6 // Check task status after completion\cf0 \cb1 \strokec4 \
+\cb3     checkTaskStatus(result.taskId);\cb1 \
+\cb3 \});\cb1 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 \cb3 \strokec2 function\cf0 \strokec4  checkTaskStatus(taskId) \{\cb1 \
+\pard\pardeftab720\partightenfactor0
+\cf0 \cb3     \cf6 \strokec6 // Wait for a moment before checking the status\cf0 \cb1 \strokec4 \
+\cb3     setTimeout(\cf2 \strokec2 function\cf0 \strokec4  () \{\cb1 \
+\cb3         console.info(ee.data.getTaskStatus(taskId));\cb1 \
+\cb3     \}, \cf8 \strokec8 240000\cf0 \strokec4 ); \cf6 \strokec6 // Adjust the delay as needed\cf0 \cb1 \strokec4 \
+\cb3 \}\cb1 \
+\cb3     \});\cb1 \
+\cb3   \});\cb1 \
+\cb3   \cb1 \
+\cb3 \}\cb1 \
+\
+\
+}
