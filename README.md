@@ -1,5 +1,11 @@
 # 2023-Cyberinfrastructure-for-Crop-Yield-Prediction
 
+## Source code from: 
+
+https://github.com/allredbw/ee-scheduler
+
+## Remember to give permission from Google Drive:
+
 Here are the general steps to give permissions to export datasets to Google Drive:
 
 1.Open Google Drive.
