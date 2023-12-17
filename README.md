@@ -4,7 +4,12 @@
 
 https://github.com/allredbw/ee-scheduler
 
-## 2. Remember to give permission from Google Drive:
+## 2. Code in Cloud Function:
+inside the folder: downloadData_function-source.
+<img width="1792" alt="image" src="https://github.com/SongxiYoung/2023-Cyberinfrastructure-for-Crop-Yield-Prediction/assets/37897076/a0ce62cb-6819-4d7c-ac51-ed6254b283d6">
+
+
+## 3. Remember to give permission from Google Drive:
 
 Here are the general steps to give permissions to export datasets to Google Drive:
 
