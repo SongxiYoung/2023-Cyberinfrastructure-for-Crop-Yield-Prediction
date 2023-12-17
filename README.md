@@ -9,6 +9,11 @@ https://cloud.google.com/scheduler/docs/tut-pub-sub
 
 ## 3. Code in Cloud Function:
 inside the folder: downloadData_function-source.
+
+package.js
+eeKey.json
+function.js
+
 <img width="1792" alt="image" src="https://github.com/SongxiYoung/2023-Cyberinfrastructure-for-Crop-Yield-Prediction/assets/37897076/a0ce62cb-6819-4d7c-ac51-ed6254b283d6">
 
 
