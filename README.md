@@ -20,8 +20,9 @@ composites.js: not essential, some self-defined functions for main file.
 
 <img width="1792" alt="image" src="https://github.com/SongxiYoung/2023-Cyberinfrastructure-for-Crop-Yield-Prediction/assets/37897076/a0ce62cb-6819-4d7c-ac51-ed6254b283d6">
 
+This repo has two export option files: toAssets and toDrive.
 
-## 4. Remember to give permission from Google Drive:
+## 4. If toDrive, remember to give permission from Google Drive:
 
 Here are the general steps to give permissions to export datasets to Google Drive:
 
