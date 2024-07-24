@@ -109,7 +109,7 @@ var exportVI = function(table, prefix) {
       var params = {
         collection: table.select([".*"], null, false),
         description: prefix,
-        bucket: '/gcs/bnn-demo',  //*********
+        bucket: 'bnn-demo',  //*********
         fileNamePrefix: prefix,
         fileFormat: 'CSV'              // Specify the file format (e.g., CSV)
       };
