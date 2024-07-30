@@ -109,8 +109,8 @@ var exportVI = function(table, prefix) {
       var params = {
         collection: table.select([".*"], null, false),
         description: prefix,
-        bucket: 'bnntraining-bucket/input',  //*********
-        fileNamePrefix: prefix,
+        bucket: 'bnntraining-bucket',  //bucket name
+        fileNamePrefix: 'input/' + prefix, // folder + file name
         fileFormat: 'CSV'              // Specify the file format (e.g., CSV)
       };
 
@@ -131,7 +131,7 @@ var exportVI = function(table, prefix) {
 var counties = UScounties; // Question
 
 // year
-var years = ee.List.sequence(2001,2002).getInfo(); //**************
+var years = ee.List.sequence(2001,2024).getInfo(); //**************
 var start = '-03-01';  //**************
 var end = '-11-30';  //**************
 
