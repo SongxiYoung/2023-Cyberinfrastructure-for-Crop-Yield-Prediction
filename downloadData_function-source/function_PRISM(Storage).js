@@ -136,9 +136,9 @@ for(var i = 2002; i <= 2003; i++) {
  */
 var params = {
         collection: mean_ppt.select([".*"], null, false),
-        description: 'PRISM_mean_ppt_'+year,
+        description: 'PRISM_mean_temp_'+year,
         bucket: 'bnntraining-bucket',  //bucket name
-        fileNamePrefix: 'input2/' + 'PRISM_mean_ppt_'+year, // folder + file name
+        fileNamePrefix: 'input2/' + 'PRISM_mean_temp_'+year, // folder + file name
         fileFormat: 'CSV'              // Specify the file format (e.g., CSV)
       };
 
@@ -163,9 +163,9 @@ var params = {
 
 var params = {
         collection: mean_ppt.select([".*"], null, false),
-        description: 'PRISM_mean_ppt_'+year,
+        description: 'PRISM_mean_vpd_'+year,
         bucket: 'bnntraining-bucket',  //bucket name
-        fileNamePrefix: 'input2/' + 'PRISM_mean_ppt_'+year, // folder + file name
+        fileNamePrefix: 'input2/' + 'PRISM_mean_vpd_'+year, // folder + file name
         fileFormat: 'CSV'              // Specify the file format (e.g., CSV)
       };
 
