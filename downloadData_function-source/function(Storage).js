@@ -12,7 +12,7 @@ exports.download = function (message, context) {
               
       console.info('----------GEE ENTRY----------');
 
-      var UScounties = ee.FeatureCollection("projects/tidy-resolver-404613/assets/cb_2016_us_county_500k");
+      var UScounties = ee.FeatureCollection("projects/bnntraining/assets/cb_2016_us_county_500k");
 
       /**
  * Export county-averaged EVI, GCI, NDWI value from 
@@ -109,7 +109,7 @@ var exportVI = function(table, prefix) {
       var params = {
         collection: table.select([".*"], null, false),
         description: prefix,
-        bucket: 'bnn-demo',  //*********
+        bucket: 'bnntraining-bucket/input',  //*********
         fileNamePrefix: prefix,
         fileFormat: 'CSV'              // Specify the file format (e.g., CSV)
       };
@@ -131,7 +131,7 @@ var exportVI = function(table, prefix) {
 var counties = UScounties; // Question
 
 // year
-var years = ee.List.sequence(2001,2023).getInfo(); //**************
+var years = ee.List.sequence(2001,2002).getInfo(); //**************
 var start = '-03-01';  //**************
 var end = '-11-30';  //**************
 
