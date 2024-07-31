@@ -110,7 +110,7 @@ var exportVI = function(table, prefix) {
         collection: table.select([".*"], null, false),
         description: prefix,
         bucket: 'bnntraining-bucket',  //bucket name
-        fileNamePrefix: 'input/' + prefix, // folder + file name
+        fileNamePrefix: 'input2/' + prefix, // folder + file name
         fileFormat: 'CSV'              // Specify the file format (e.g., CSV)
       };
 
