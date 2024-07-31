@@ -46,11 +46,11 @@ exports.download = function (message, context) {
       // 获取仅包含玉米和大豆的县
       var datelist = ee.List(['17', '18', '19', '20', '21', '26', '27', '29', '31', '38', '39', '46', '55']);
       var counties = UScounties.filter(ee.Filter.inList('STATEFP', datelist));
-      Map.addLayer(counties, {}, 'ctn');
+      // Map.addLayer(counties, {}, 'ctn');
 
       // 定义一个函数来处理每种土壤属性类型
       var processSoilType = function(type, soil_avg) {
-        Map.addLayer(soil_avg, {}, type);
+        // Map.addLayer(soil_avg, {}, type);
 
         // 循环处理每个年份
         for (var i = 2001; i <= 2002; i++) {
