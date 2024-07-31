@@ -53,7 +53,7 @@ exports.download = function (message, context) {
         Map.addLayer(soil_avg, {}, type);
 
         // 循环处理每个年份
-        for (var i = 2001; i < 2024; i++) {
+        for (var i = 2001; i <= 2003; i++) {
           var year = i.toString();
 
           // 获取作物掩膜
