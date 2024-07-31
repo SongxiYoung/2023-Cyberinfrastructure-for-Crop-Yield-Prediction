@@ -136,7 +136,7 @@ var start = '-03-01';  //**************
 var end = '-11-30';  //**************
 
 // loop through each year
-for(var i = 1; i <= years.length; i++) { // Question
+for(var i = 0; i <= years.length; i++) { // Question
 
   var year = years[i];
   var p_year = years[i];
