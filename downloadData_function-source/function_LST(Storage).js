@@ -84,8 +84,8 @@ var exportTable = function(table, prefix) {
 // get only counties with corn and soy
 // var counties = UScounties.filter(ee.Filter.eq('corn_soy',1)); // Question
 var counties = UScounties;
-print(counties);
-Map.addLayer(counties, {}, 'ctn');
+// print(counties);
+// Map.addLayer(counties, {}, 'ctn');
 
 var start = '-03-01';  //*********
 var end = '-11-30';   //*********
@@ -117,7 +117,7 @@ for (var i = 2002; i <= 2003; i++) { //for(var i = 2002; i < 2021; i++) {
     // get LST day stack
     var LSTday_stack = stackLST(year + start, year + end, counties, cropMask, 'Day');
     // print(LSTday_stack);
-    print(LSTday_stack)
+    // print(LSTday_stack)
     var meanLSTday = LSTday_stack.reduceRegions(
         counties, ee.Reducer.mean(), 500);
     exportTable(meanLSTday, 'LSTday_daily_mean_' + year);
