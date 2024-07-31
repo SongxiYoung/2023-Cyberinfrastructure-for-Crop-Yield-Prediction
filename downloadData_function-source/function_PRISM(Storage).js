@@ -64,7 +64,7 @@ var start = '-03-01';
 var end = '-11-30';
 
 // loop through each year
-for(var i = 2002; i <= 2003; i++) {
+for(var i = 2001; i <= 2003; i++) {
 
   var year = i.toString();
   var p_year = (i-1).toString();
@@ -135,7 +135,7 @@ for(var i = 2002; i <= 2003; i++) {
  * Export
  */
 var params = {
-        collection: mean_ppt.select([".*"], null, false),
+        collection: mean_temp.select([".*"], null, false),
         description: 'PRISM_mean_temp_'+year,
         bucket: 'bnntraining-bucket',  //bucket name
         fileNamePrefix: 'input2/' + 'PRISM_mean_temp_'+year, // folder + file name
@@ -162,7 +162,7 @@ var params = {
     counties, ee.Reducer.mean(), 500); // origin: 1000
 
 var params = {
-        collection: mean_ppt.select([".*"], null, false),
+        collection: mean_vpd.select([".*"], null, false),
         description: 'PRISM_mean_vpd_'+year,
         bucket: 'bnntraining-bucket',  //bucket name
         fileNamePrefix: 'input2/' + 'PRISM_mean_vpd_'+year, // folder + file name
