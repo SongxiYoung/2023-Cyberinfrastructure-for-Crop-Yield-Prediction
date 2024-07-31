@@ -11,6 +11,9 @@ exports.download = function (message, context) {
       console.info('----------GEE ENTRY----------');
 
       var UScounties = ee.FeatureCollection("projects/bnntraining/assets/cb_2016_us_county_500k");
+      var awc = ee.Image("projects/bnntraining/assets/awc"),
+      var cec = ee.Image("projects/bnntraining/assets/cec"),
+      var som = ee.Image("projects/bnntraining/assets/som");
 
       /**
        * Extract soil properties for each county
