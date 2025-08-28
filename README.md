@@ -14,7 +14,7 @@ package.json: import essential packages, such as GEE.
 
 eeKey.json: authorization file.
 
-function.js: main file, the entry of the Cloud Function.
+index.js: main file, the entry of the Cloud Function.
 
 composites.js: not essential, some self-defined functions for main file.
 
