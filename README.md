@@ -18,7 +18,7 @@ index.js: main file, the entry of the Cloud Function.
 
 composites.js: self-defined functions for main file.
 
-![](images/file_organize.png)
+![](downloadData_function-source/images/file_organize.png)
 
 ## 4. If toDrive, remember to give permission from Google Drive:
 
