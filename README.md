@@ -1,13 +1,15 @@
 # 2023-Cyberinfrastructure-for-Crop-Yield-Prediction
 
-## 1. Source code from: 
+## 1. File Organization: 
 
 https://github.com/allredbw/ee-scheduler
 
 ## 2. Official Documentation:
+
 https://cloud.google.com/scheduler/docs/tut-pub-sub
 
-## 3. Code in Cloud Function:
+## 3. Code in Cloud Function (Gen2 is Cloud Run Function):
+
 inside the folder: downloadData_function-source.
 
 package.json: import essential packages, such as GEE.
