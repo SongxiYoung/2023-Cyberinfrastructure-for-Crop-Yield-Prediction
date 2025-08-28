@@ -1,9 +1,0 @@
-{
-  "name": "Download Datasets",
-  "version": "1.0.0",
-  "description": "GEE Datasets",
-  "main": "function.js",
-  "dependencies": {
-    "@google/earthengine": "^0.1.253"
-  }
-}
