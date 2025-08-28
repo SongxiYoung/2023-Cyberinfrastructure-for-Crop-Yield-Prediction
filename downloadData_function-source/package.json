@@ -1,0 +1,16 @@
+{
+  "name": "downloadfromgee",
+  "version": "1.0.0",
+  "description": "GEE Datasets",
+  "private": true,
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.4.0",
+    "@google/earthengine": "^0.1.253"
+  },
+  "scripts": {
+    "start": "functions-framework --target=download --signature-type=cloudevent --port=${PORT:-8080}"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
