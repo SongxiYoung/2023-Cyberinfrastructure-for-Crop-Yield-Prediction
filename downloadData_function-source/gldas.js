@@ -5,12 +5,9 @@ function runGLDASDownload(params = {}) {
 
 /**
  * Extract county average value from GLDAS2.1 (3-hourly) → daily → county mean
- * 两点改动：
- *  1) 导出到 bnntraining2-bucket（GCS）
- *  2) corn & soybean 自动都跑，分别输出到 input2/corn/... 和 input2/soybean/...
  */
 
-// 把 DOY 拼到 band 名后缀：<原名>_<DOY>
+
 var addDOY = function (img) {
   var doy = img.get('DOY');
   var names = img.bandNames().map(function (name) {
@@ -19,7 +16,7 @@ var addDOY = function (img) {
   return img.select(img.bandNames(), names);
 };
 
-// 生成“按天”的要素用于 join
+
 function daily_func(date) {
   return ee.Feature(null, {
     DATE: ee.Date(date).format('YYYY-MM-dd'),
@@ -29,7 +26,7 @@ function daily_func(date) {
   });
 }
 
-// 给 GLDAS 影像设置 DATE / DOY 属性
+
 function set_date_func(obj) {
   var date = ee.Date(obj.get('system:time_start'));
   return obj.set({
@@ -38,7 +35,7 @@ function set_date_func(obj) {
   });
 }
 
-// 把同一天的 3 小时影像求平均，得到“日均”影像
+
 function gldas_daily_func(ft) {
   var gcoll = ee.ImageCollection.fromImages(ft.get('gldas_images'));
   return gcoll.mean().set({
@@ -47,7 +44,7 @@ function gldas_daily_func(ft) {
   });
 }
 
-// 堆栈
+
 function appendBand(current, previous) {
   return ee.Algorithms.If(
     ee.Algorithms.IsEqual(previous, null),
@@ -56,13 +53,13 @@ function appendBand(current, previous) {
   );
 }
 
-// 导出到 GCS（description 合法化；prefix 支持子目录）
+// export to GCS
 var exportTable = function (table, prefix) {
   var safeDesc = prefix.replace(/[^a-zA-Z0-9._:;_-]/g, '-');
   var params = {
     collection: table.select(['.*'], null, false),
     description: safeDesc,
-    bucket: 'bnntraining2-bucket',            // ✅ 改为 GCS 桶
+    bucket: 'bnntraining2-bucket',            // GCS bucket
     fileNamePrefix: 'downloaded/' + prefix,       // corn/... 或 soybean/...
     fileFormat: 'CSV',
   };
@@ -82,7 +79,7 @@ const win = params.window; // {start:'-03-01', end:'-08-28'}
 var start = `${win.start}`;
 var end = `${win.end}`;
 
-// 年份循环
+// year loop
 for (var i = Y0; i <= Y1; i++) {
   var year = i.toString();
   var p_year = (i - 1).toString();
@@ -90,14 +87,14 @@ for (var i = Y0; i <= Y1; i++) {
   var start_date = ee.Date(year + start);
   var end_date   = ee.Date(year + end);
 
-  // ✅ 两个作物都跑
+  // 
   var crops = [
     { code: 1, name: 'corn' },
     { code: 5, name: 'soybean' },
   ];
 
   crops.forEach(function (crop) {
-    // 作物掩膜：>2006 用当年 CDL；否则用 MCD12Q1 == 12
+    // cropmask
     var cropMask;
     if (i > 2006) {
       var start_day = p_year + '-01-01';
@@ -105,14 +102,13 @@ for (var i = Y0; i <= Y1; i++) {
       var dataset = ee.ImageCollection('USDA/NASS/CDL')
         .filter(ee.Filter.date(start_day, end_day))
         .first();
-      // 若某年不是 'cropland'，请改成实际 band 名
       cropMask = dataset.select('cropland').eq(crop.code);
     } else {
       var mcdband = 'MODIS/006/MCD12Q1/' + p_year + '_01_01';
       cropMask = ee.Image(mcdband).select('LC_Type1').clip(counties).eq(12);
     }
 
-    // GLDAS：3 小时 → 选变量 →（可选）掩膜 → 加日期属性与 DOY 后缀
+    // 
     var gldas = ee.ImageCollection('NASA/GLDAS/V021/NOAH/G025/T3H')
       .filterDate(year + start, year + end)
       .filterBounds(counties)
@@ -120,7 +116,7 @@ for (var i = Y0; i <= Y1; i++) {
       .map(set_date_func)
       .map(addDOY);
 
-    // 生成天序列并 join
+    // 
     var daily_coll = ee.List.sequence(
       start_date.millis(),
       end_date.millis(),
@@ -132,10 +128,10 @@ for (var i = Y0; i <= Y1; i++) {
       ee.Join.saveAll({ matchesKey: 'gldas_images' }).apply(daily_coll, gldas, daily_filter)
     );
 
-    // 日均 → 堆栈
+    // 
     var gldas_daily_mean = gldas_daily.map(gldas_daily_func).iterate(appendBand);
 
-    // 县均值
+    // 
     var gldas_table = ee.Image(gldas_daily_mean).reduceRegions({
       collection: counties,
       reducer: ee.Reducer.mean(),
@@ -143,7 +139,7 @@ for (var i = Y0; i <= Y1; i++) {
       tileScale: 16,
     });
 
-    // 导出（按作物分目录）
+    // 
     exportTable(gldas_table, crop.name + '/GLDAS_mean_' + year);
   });
 }
