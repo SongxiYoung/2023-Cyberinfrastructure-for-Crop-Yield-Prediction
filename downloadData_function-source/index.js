@@ -19,11 +19,11 @@ function initEE() {
   });
 }
 
-// ---------- 统一日期窗口（America/Chicago） ----------
+// ---------- Update Time Zone: Chicago ----------
 function pad2(n) { return n < 10 ? '0' + n : '' + n; }
 
 /**
- * 取“芝加哥时区的今天”
+ * today
  */
 function todayChicago() {
   const tz = 'America/Chicago';
@@ -35,37 +35,33 @@ function todayChicago() {
 }
 
 /**
- * 统一规则：
- * - 目标窗口：当年 3-01 → 今天；
- * - 如果今天在 3-01 之前（1/1～2/29/30），则使用“上一年 3-01 → 今天”
- * - 返回给子模块的参数格式保持不变：
  *   { years:[Y,Y], window:{ start:'-03-01', end:'-MM-DD' }, year:Y, today:'YYYY-MM-DD' }
  */
 function buildSeasonWindow() {
   const t = todayChicago();
-  const isBeforeMarch1 = (t.m < 3) || (t.m === 3 && t.d < 1); // 实际就是 t.m < 3
+  const isBeforeMarch1 = (t.m < 3) || (t.m === 3 && t.d < 1); 
   const Y = isBeforeMarch1 ? (t.y - 1) : t.y;
-  const endRel = `-${pad2(t.m)}-${pad2(t.d)}`; // 例如 -08-28
+  const endRel = `-${pad2(t.m)}-${pad2(t.d)}`; // -08-28
 
   return {
-    years: [Y, Y],                         // 维持你各模块的 [start,end] 形式
-    window: { start: '-03-01', end: endRel }, // 各模块里仍然用 `${year}${window.start}` 这种拼接
-    year: Y,                               // 有的模块可能直接需要 year
-    today: t.ymd,                          // 备用：绝对“今天”字符串
-    // 如果某些模块希望用绝对日期而非“year+相对”，也顺便提供：
-    windowAbs: { start: `${Y}-03-01`, end: t.ymd } // 注意：EE filterDate 是 [start, end)
+    years: [Y, Y],                         // 
+    window: { start: '-03-01', end: endRel }, //
+    year: Y,                               // 
+    today: t.ymd,                          //
+    // 
+    windowAbs: { start: `${Y}-03-01`, end: t.ymd } // 
   };
 }
 
-// Pub/Sub CloudEvent 入口
+// Pub/Sub CloudEvent entrance
 functions.cloudEvent('download', async (cloudEvent) => {
   try {
     await initEE();
 
-    // 1) 统一生成本次执行的日期窗口
+    // 1) 
     const AUTO = buildSeasonWindow();
 
-    // 2) 解析消息（允许覆盖默认参数）
+    // 2) 
     let msg = {};
     const m = cloudEvent?.data?.message;
     if (m?.data) {
@@ -74,8 +70,8 @@ functions.cloudEvent('download', async (cloudEvent) => {
       } catch {}
     }
 
-    const task = (msg.task || 'all').toLowerCase();  // 默认 all
-    const params = { ...AUTO, ...(msg.params || {}) }; // 统一窗口，可被消息覆盖
+    const task = (msg.task || 'all').toLowerCase();  //  all parameters
+    const params = { ...AUTO, ...(msg.params || {}) }; // 
 
     console.info('ENTRY task:', task, 'params:', params);
 
