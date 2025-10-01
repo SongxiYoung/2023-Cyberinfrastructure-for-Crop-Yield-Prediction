@@ -27,7 +27,7 @@ function appendBand(current, previous) {
   return accum;
 }
 
-/** 给影像设置 bandname（yyyy_doy） */
+/** （yyyy_doy） */
 var addBandname = function (img) {
   var datestring = ee.String(img.get('system:index'));
   var format = 'YYYY_MM_dd';
@@ -38,7 +38,6 @@ var addBandname = function (img) {
   return img.set('bandname', bandname).set('DOY', doy);
 };
 
-/** 叠 LST 日度影像 */
 function stackLST(start, end, region, mask, mode) {
   // mode: 'Day' or 'Night'
   var band = 'LST_' + mode + '_1km';
@@ -56,7 +55,7 @@ function stackLST(start, end, region, mask, mode) {
   var LST = ee.ImageCollection(coll)
     .filterDate(start, end)
     .filterBounds(region)
-    // .map(function(img){ return img.updateMask(img.select(qcband).eq(0)); }) // 如需严格 QC
+    // .map(function(img){ return img.updateMask(img.select(qcband).eq(0)); }) 
     .map(function (img) { return img.updateMask(img.select(qcband)); })
     .map(function (img) { return img.select(band).float().multiply(0.02).updateMask(mask); })
     .map(addBandname)
@@ -65,13 +64,13 @@ function stackLST(start, end, region, mask, mode) {
   return stackCollection(LST);
 }
 
-/** 导出到 GCS：gs://bnntraining2-bucket/input2/<prefix>.csv */
+/** export to GCS：gs://bnntraining2-bucket/input2/<prefix>.csv */
 var exportTable = function (table, prefix) {
-  var safeDesc = prefix.replace(/[^a-zA-Z0-9._:;_-]/g, '-'); // description 不能有 '/'
+  var safeDesc = prefix.replace(/[^a-zA-Z0-9._:;_-]/g, '-'); 
   var params = {
     collection: table.select(['.*'], null, false),
     description: safeDesc,
-    bucket: 'bnntraining2-bucket',             // ✅ 改 bucket
+    bucket: 'bnntraining2-bucket',             // bucket name
     fileNamePrefix: 'downloaded/' + prefix,        // corn/... 或 soybean/...
     fileFormat: 'CSV'
   };
@@ -90,11 +89,11 @@ const win = params.window; // {start:'-03-01', end:'-08-28'}
 var start = `${win.start}`;
 var end = `${win.end}`;
 
-// 年份循环
+// year loop
 for (var i = Y0; i <= Y1; i++) {
   var year = i.toString();
 
-  // ✅ corn 与 soybean 都跑
+  // 
   var crops = [
     { code: 1, name: 'corn' },
     { code: 5, name: 'soybean' }
