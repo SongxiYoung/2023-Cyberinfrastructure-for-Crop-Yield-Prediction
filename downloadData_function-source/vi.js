@@ -3,9 +3,6 @@ var comp = require('./composites.js');
 
 function runVIDownload(params = {}) {
 
-/**
- * 各种指数函数
- */
 var getEVI = function (image) {
   var evi = image.expression(
     '2.5 * (nir - red) / (nir + 6 * red - 7.5 * blue + 10000)',
@@ -42,9 +39,7 @@ var getNDVI = function (image) {
   return ndvi.updateMask(ndvi.gt(-1)).updateMask(ndvi.lt(1));
 };
 
-/**
- * 给影像添加 bandname 属性
- */
+
 var addBandname = function (img) {
   var datestring = ee.String(img.get('system:index'));
   var format = 'YYYY_MM_dd';
@@ -55,9 +50,7 @@ var addBandname = function (img) {
   return img.set('bandname', bandname);
 };
 
-/**
- * 生成一个 VI 堆栈
- */
+
 var stackVI = function (start, end, region, mask, func) {
   var modVI = ee
     .ImageCollection('MODIS/061/MCD43A4')
@@ -73,7 +66,7 @@ var stackVI = function (start, end, region, mask, func) {
 };
 
 /**
- * 导出到 GCS
+ * export to GCS
  */
 var exportVI = function (table, prefix) {
   // description 不能有斜杠
@@ -82,8 +75,8 @@ var exportVI = function (table, prefix) {
   var params = {
     collection: table.select(['.*'], null, false),
     description: safeDesc,
-    bucket: 'bnntraining2-bucket', // ✅ 改掉 bucket
-    fileNamePrefix: 'downloaded/' + prefix, // corn/soybean 会体现在 prefix 里
+    bucket: 'bnntraining2-bucket', // bucket
+    fileNamePrefix: 'downloaded/' + prefix, // corn/soybean
     fileFormat: 'CSV',
   };
 
@@ -98,7 +91,6 @@ var exportVI = function (table, prefix) {
 const UScounties = ee.FeatureCollection('projects/bnntraining2/assets/cb_2016_us_county_500k');
 var counties = UScounties; 
 
-// 年份
 const [Y0, Y1] = params.years;
 const win = params.window; // {start:'-03-01', end:'-08-28'}
 
@@ -106,11 +98,11 @@ var years = ee.List.sequence(Y0, Y1).getInfo();
 var start = `${win.start}`;
 var end = `${win.end}`;
 
-// 遍历年份
+// year loop
 for (var i = 0; i < years.length; i++) {
   var year = years[i];
 
-  // 遍历作物：1=corn, 5=soybean
+  // 1=corn, 5=soybean
   var crops = [
     { code: 1, name: 'corn' },
     { code: 5, name: 'soybean' },
