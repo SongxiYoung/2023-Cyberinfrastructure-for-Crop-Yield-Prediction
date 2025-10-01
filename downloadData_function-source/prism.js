@@ -97,19 +97,19 @@ for (var i = Y0; i <= Y1; i++) {
       cropMask = ee.Image(mcdband).select('LC_Type1').clip(counties).eq(12);
     }
 
-    // --- 降水 ppt ---
+    // --- ppt ---
     var pptBands = ['ppt'];
     var prism_ppt = stackPRISM(year + start, year + end, counties, cropMask, pptBands);
     var mean_ppt = prism_ppt.reduceRegions(counties, ee.Reducer.mean(), 500);
     exportTable(mean_ppt, crop.name + '/PRISM_mean_ppt_' + year);
 
-    // --- 温度 tmin/tmean/tmax ---
+    // --- tmin/tmean/tmax ---
     var tempBands = ['tmin', 'tmean', 'tmax'];
     var prism_temp = stackPRISM(year + start, year + end, counties, cropMask, tempBands);
     var mean_temp = prism_temp.reduceRegions(counties, ee.Reducer.mean(), 500);
     exportTable(mean_temp, crop.name + '/PRISM_mean_temp_' + year);
 
-    // --- VPD 相关（tdmean、vpdmin、vpdmax 及温度/降水）---
+    // --- VPD ---
     var vpdBands = ['tdmean', 'vpdmin', 'vpdmax', 'tmin', 'tmean', 'tmax', 'ppt'];
     var prism_vpd = stackPRISM(year + start, year + end, counties, cropMask, vpdBands);
     var mean_vpd = prism_vpd.reduceRegions(counties, ee.Reducer.mean(), 500);
